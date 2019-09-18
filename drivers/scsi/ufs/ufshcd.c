@@ -8658,6 +8658,9 @@ int ufshcd_shutdown(struct ufs_hba *hba)
 	struct Scsi_Host *host = hba->host;
 	unsigned long flags;
 
+	if (!hba->is_powered)
+		goto out;
+
 	if (ufshcd_is_ufs_dev_poweroff(hba) && ufshcd_is_link_off(hba))
 		goto out;
 
