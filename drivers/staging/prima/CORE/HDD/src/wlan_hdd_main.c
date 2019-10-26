@@ -307,7 +307,12 @@ static int __hdd_netdev_notifier_call(struct notifier_block * nb,
                                          unsigned long state,
                                          void *ndev)
 {
+#if (LINUX_VERSION_CODE >= KERNEL_VERSION(3, 11, 0))
+   struct netdev_notifier_info *info = ndev;
+   struct net_device *dev = info->dev;
+#else
    struct net_device *dev = ndev;
+#endif
    hdd_adapter_t *pAdapter = WLAN_HDD_GET_PRIV_PTR(dev);
    hdd_context_t *pHddCtx;
 #ifdef WLAN_BTAMP_FEATURE
@@ -8534,13 +8539,8 @@ VOS_STATUS hdd_request_firmware(char *pfileName,v_VOID_t *pCtx,v_VOID_t **ppfw_d
        }
    }
    else if(!strcmp(WLAN_NV_FILE, pfileName)) {
-        char sysfs_fname[50];
-        if (wcnss_get_wlan_nv_name(sysfs_fname) != 0) {
-            hddLog(VOS_TRACE_LEVEL_INFO, "%s: wcnss_get_wlan_nv_name returned non zero", __func__);
-            memcpy(sysfs_fname, WLAN_NV_FILE, sizeof(WLAN_NV_FILE));
-        }
-        hddLog(VOS_TRACE_LEVEL_INFO, "%s: sysfs_name is: %s",  __func__, sysfs_fname);
-        status = request_firmware(&pHddCtx->nv, sysfs_fname, pHddCtx->parent_dev);
+
+       status = request_firmware(&pHddCtx->nv, pfileName, pHddCtx->parent_dev);
 
        if(status || !pHddCtx->nv || !pHddCtx->nv->data) {
            hddLog(VOS_TRACE_LEVEL_FATAL, "%s: nv %s download failed",
@@ -13054,13 +13054,6 @@ static int hdd_generate_iface_mac_addr_auto(hdd_context_t *pHddCtx,
    unsigned int serialno;
    serialno = wcnss_get_serial_number();
 
-   /* BEGIN Motorola, gambugge, IKSWO-55806: Update OUI for WiFi fallback MAC address */
-   /* Motorola OUI */
-   mac_addr.bytes[0] = 0xF0;
-   mac_addr.bytes[1] = 0xD7;
-   mac_addr.bytes[2] = 0xAA;
-   /* END IKSWO-55806 */
-
    if (0 != serialno)
    {
       /* MAC address has 3 bytes of OUI so we have a maximum of 3
@@ -15807,7 +15800,8 @@ v_U8_t hdd_is_fw_logging_enabled(void)
     pHddCtx = vos_get_context(VOS_MODULE_ID_HDD,
                               vos_get_global_context(VOS_MODULE_ID_HDD, NULL));
 
-    return (pHddCtx && pHddCtx->cfg_ini->enableMgmtLogging);
+    return (pHddCtx && pHddCtx->cfg_ini->wlanLoggingEnable &&
+            pHddCtx->cfg_ini->enableMgmtLogging);
 }
 
 /*
@@ -15820,8 +15814,10 @@ v_U8_t hdd_is_fw_ev_logging_enabled(void)
     pHddCtx = vos_get_context(VOS_MODULE_ID_HDD,
                               vos_get_global_context(VOS_MODULE_ID_HDD, NULL));
 
-    return (pHddCtx && pHddCtx->cfg_ini->enableFWLogging);
+    return (pHddCtx && pHddCtx->cfg_ini->wlanLoggingEnable &&
+            pHddCtx->cfg_ini->enableFWLogging);
 }
+
 /*
  * API to find if there is any session connected
  */

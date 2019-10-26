@@ -143,6 +143,15 @@ typedef struct {
 }__attribute__((packed)) qcom_ie_age ;
 #endif
 
+#ifndef WLAN_AKM_SUITE_SAE
+#define WLAN_AKM_SUITE_SAE 0x000FAC08
+#endif
+
+#ifndef WLAN_AKM_SUITE_OWE_1
+#define WLAN_AKM_SUITE_OWE_1 0x000FAC12
+#endif
+
+
 enum qca_nl80211_vendor_subcmds {
     QCA_NL80211_VENDOR_SUBCMD_UNSPEC = 0,
     QCA_NL80211_VENDOR_SUBCMD_TEST = 1,
@@ -1858,7 +1867,7 @@ enum qca_wlan_vendor_attr_memory_dump {
 };
 
 #if defined(CFG80211_DISCONNECTED_V2) || \
-(LINUX_VERSION_CODE >= KERNEL_VERSION(3, 18, 0))
+(LINUX_VERSION_CODE >= KERNEL_VERSION(4, 2, 0))
 static inline void wlan_hdd_cfg80211_indicate_disconnect(struct net_device *dev,
                                                          bool locally_generated,
                                                          int reason)
