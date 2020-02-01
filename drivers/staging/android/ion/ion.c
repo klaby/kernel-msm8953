@@ -1502,8 +1502,7 @@ static struct ion_handle *__ion_import_dma_buf(struct ion_client *client,
 
 	handle = ion_handle_create(client, buffer);
 	if (IS_ERR(handle)) {
-		if (lock_client)
-			mutex_unlock(&client->lock);
+		mutex_unlock(&client->lock);
 		goto end;
 	}
 

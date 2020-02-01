@@ -39,6 +39,7 @@
 
 #include "ufshcd.h"
 #include "ufshcd-pltfrm.h"
+#include <linux/pinctrl/consumer.h>
 
 static int ufshcd_parse_reset_info(struct ufs_hba *hba)
 {

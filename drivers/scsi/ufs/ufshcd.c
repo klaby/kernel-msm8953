@@ -48,6 +48,7 @@
 #include "ufs_quirks.h"
 #include "ufs-debugfs.h"
 #include "ufs-qcom.h"
+#include <linux/pinctrl/consumer.h>
 
 #define CREATE_TRACE_POINTS
 #include <trace/events/ufs.h>

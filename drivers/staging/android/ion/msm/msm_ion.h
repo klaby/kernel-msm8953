@@ -196,18 +196,6 @@ static inline int msm_ion_do_cache_op(
 	return -ENODEV;
 }
 
-int msm_ion_do_cache_offset_op(
-		struct ion_client *client, struct ion_handle *handle,
-		void *vaddr, unsigned int offset, unsigned long len,
-		unsigned int cmd)
-{
-	return -ENODEV;
-}
-
-static bool is_buffer_hlos_assigned(struct ion_buffer *buffer)
-{
-	return true;
-}
 #endif /* CONFIG_ION */
 
 #endif

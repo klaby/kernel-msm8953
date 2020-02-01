@@ -535,7 +535,8 @@ static void adv7533_parse_vreg_dt(struct device *dev,
 			mp->vreg_config[i].max_voltage,
 			mp->vreg_config[i].enable_load,
 			mp->vreg_config[i].disable_load,
-			mp->vreg_config[i].post_on_sleep);
+			mp->vreg_config[i].post_on_sleep)
+			mp->vreg_config[i].enable_load);
 	}
 
 	devm_kfree(dev, val_array);
